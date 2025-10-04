@@ -51,6 +51,7 @@ extension SplashViewController {
                 return
             }
             viewController.delegate = self
+            print("Splash: set delegate on AuthViewController")
         } else {
             super.prepare(for: segue, sender: sender)
         }
@@ -59,8 +60,10 @@ extension SplashViewController {
 
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
-        vc.dismiss(animated: true)
-        
-        switchToTabBarController()
+        print("Splash: didAuthenticate called")
+        vc.dismiss(animated: true){ [weak self] in
+            print("Splash: auth dismissed, switching to TabBar")
+            self?.switchToTabBarController()
+        }
     }
 }
