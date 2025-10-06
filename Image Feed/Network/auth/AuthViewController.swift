@@ -39,29 +39,28 @@ class AuthViewController: UIViewController{
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         print("AuthVC: got code = \(code)")
-        vc.dismiss(animated: true)
         print("AuthVC: start fetchOAuthToken")
+
         OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
             guard let self = self else { return }
-            print("AuthVC: fetchOAuthToken completion: \(result)")
-            
+          //  UIBlockingProgressHUD.dismiss()
+
             switch result {
             case .success(let token):
                 print("AuthVC: token received: \(token)")
                 OAuth2TokenStorage().token = token
-                print("AuthVC: token saved to storage")
-                //self.delegate?.didAuthenticate(self)
-                
-            DispatchQueue.main.async {
-                print("AuthVC: calling delegate.didAuthenticate")
-                self.delegate?.didAuthenticate(self)
-            }
-                
+
+                vc.dismiss(animated: true) {
+                    print("AuthVC: calling delegate.didAuthenticate")
+                    self.delegate?.didAuthenticate(self)
+                }
+
             case .failure(let error):
-                print(" OAuth token fetch failed: \(error)")
+                print("OAuth token fetch failed: \(error)")
             }
         }
     }
+
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         vc.dismiss(animated: true)
     }
