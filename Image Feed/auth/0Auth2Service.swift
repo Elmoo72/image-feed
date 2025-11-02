@@ -8,7 +8,7 @@ final class OAuth2Service {
     
     static let shared = OAuth2Service()
     
-    private let dataStorage = OAuth2TokenStorage()
+    private let dataStorage = OAuth2TokenStorage.shared
     private let urlSession = URLSession.shared
     
     private var task: URLSessionTask?
@@ -101,7 +101,7 @@ extension OAuth2Service {
     private func object(for request: URLRequest, completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void) -> URLSessionTask {
         let decoder = JSONDecoder()
         
-        return urlSession.data(for: request) { (result: Result<Data, Error>) in
+        return urlSession.objectTask(for: request) { (result: Result<Data, Error>) in
             switch result {
             case .success(let data):
                 do {

@@ -1,69 +1,145 @@
 import UIKit
+import Kingfisher
+import Foundation
+
 final class ProfileViewController: UIViewController {
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+
+    private let profileService = ProfileService.shared
+    private let storage = OAuth2TokenStorage.shared
+
+    private let nameLabel = UILabel()
+    private let loginNameLabel = UILabel()
+    private let descriptionLabel = UILabel()
+    private let profileImageView = UIImageView()
+    private let exitButton = UIButton()
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        let NameLabel = UILabel()
-        NameLabel.text = "Екатерина Новикова"
-        NameLabel.translatesAutoresizingMaskIntoConstraints = false
-        NameLabel.font = UIFont.boldSystemFont(ofSize: 23)
-        NameLabel.textColor = .white
+        view.backgroundColor = .black
         
-        let TagLabel = UILabel()
-        TagLabel.text = "@ekaterina_novikova"
-        TagLabel.translatesAutoresizingMaskIntoConstraints = false
-        TagLabel.font = UIFont.boldSystemFont(ofSize: 13)
-        TagLabel.textColor = .gray
+        setupUI()
+        fetchProfile()
         
-        let TextLabel = UILabel()
-        TextLabel.text = "Hello, world!"
-        TextLabel.translatesAutoresizingMaskIntoConstraints = false
-        TextLabel.font = UIFont.boldSystemFont(ofSize: 13)
-        TextLabel.textColor = .white
-        
-        let ProfileImage = UIImageView()
-        ProfileImage.image = UIImage(named: "ProfileImage")
-        ProfileImage.translatesAutoresizingMaskIntoConstraints = false
-        
-       let ExitButton = UIButton()
-        ExitButton.setImage(UIImage(named: "Exit"), for: .normal)
-        ExitButton.tintColor = .red
-        ExitButton.translatesAutoresizingMaskIntoConstraints = false
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName:ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else {return}
+                self.updateAvatar()
+            }
+        updateAvatar()
+            }
 
-        
-        
-        
-        view.addSubview(ProfileImage)
-        view.addSubview(NameLabel)
-        view.addSubview(TagLabel)
-        view.addSubview(TextLabel)
-        view.addSubview(ExitButton)
-        
-        NSLayoutConstraint.activate([
-            ProfileImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-            ProfileImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            ProfileImage.heightAnchor.constraint(equalToConstant: 70),
-            ProfileImage.widthAnchor.constraint(equalToConstant: 70),
-            
-            NameLabel.topAnchor.constraint(equalTo: ProfileImage.bottomAnchor, constant: 12),
-            NameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-          
-            
-            TagLabel.topAnchor.constraint(equalTo: NameLabel.bottomAnchor, constant: 5),
-            TagLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            
-            TextLabel.topAnchor.constraint(equalTo: TagLabel.bottomAnchor, constant: 8),
-            TextLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            
-            ExitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-            ExitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            ExitButton.heightAnchor.constraint(equalToConstant: 44),
-            ExitButton.widthAnchor.constraint(equalToConstant: 44),
-        ])
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let imageUrl = URL(string: profileImageURL)
+        else { return }
 
+        print("imageUrl: \(imageUrl)")
 
-        
+        let placeholderImage = UIImage(systemName: "person.circle.fill")?
+            .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
+            .withConfiguration(UIImage.SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
+
+        let processor = RoundCornerImageProcessor(cornerRadius: 20)
+        profileImageView.kf.indicatorType = .activity
+        profileImageView.kf.setImage(
+            with: imageUrl,
+            placeholder: placeholderImage,
+            options: [
+                .processor(processor),
+                .scaleFactor(UIScreen.main.scale),
+                .cacheOriginalImage,
+                .forceRefresh
+            ]) { result in
+
+                switch result {
+                    
+                case .success(let value):
+                    print(value.image)
+                    print(value.cacheType)
+                    print(value.source)
+                case .failure(let error):
+                    print(error)
+                }
+            }
     }
-    
-    
+
+    private func fetchProfile() {
+        guard let token = storage.token else {
+            assertionFailure("No user token.")
+            return
+        }
+
+        UIBlockingProgressHUD.show()
+        profileService.fetchProfile(token) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            switch result {
+            case .success(let profile):
+                self?.updateProfileDetails(with: profile)
+            case .failure(let error):
+                print("Error loading profile: \(error)")
+            }
+        }
+    }
+
+    private func updateProfileDetails(with profile: Profile) {
+        print("updateProfileDetails called with name: \(profile.name)")
+        nameLabel.text = profile.name
+        loginNameLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
+    }
+
+    private func setupUI() {
+        profileImageView.image = UIImage(named: "ProfileImage")
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+
+        nameLabel.textColor = .white
+        nameLabel.font = UIFont.boldSystemFont(ofSize: 23)
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        loginNameLabel.textColor = .gray
+        loginNameLabel.font = UIFont.systemFont(ofSize: 13)
+        loginNameLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        descriptionLabel.textColor = .white
+        descriptionLabel.font = UIFont.systemFont(ofSize: 13)
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        exitButton.setImage(UIImage(named: "Exit"), for: .normal)
+        exitButton.tintColor = .red
+        exitButton.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(profileImageView)
+        view.addSubview(nameLabel)
+        view.addSubview(loginNameLabel)
+        view.addSubview(descriptionLabel)
+        view.addSubview(exitButton)
+
+        NSLayoutConstraint.activate([
+            profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            profileImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            profileImageView.heightAnchor.constraint(equalToConstant: 70),
+            profileImageView.widthAnchor.constraint(equalToConstant: 70),
+
+            nameLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 12),
+            nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+
+            loginNameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5),
+            loginNameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+
+            descriptionLabel.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 8),
+            descriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+
+            exitButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
+            exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            exitButton.heightAnchor.constraint(equalToConstant: 44),
+            exitButton.widthAnchor.constraint(equalToConstant: 44),
+        ])
+    }
 }

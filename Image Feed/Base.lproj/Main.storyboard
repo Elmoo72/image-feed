@@ -81,10 +81,11 @@
             </objects>
             <point key="canvasLocation" x="-762.59541984732823" y="-287.32394366197184"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Tap Bar Controller-->
         <scene sceneID="CiN-Pb-lV1">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarViewController" id="PAX-OL-yG7" sceneMemberID="viewController">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="en3-lu-A7o" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tabBarController storyboardIdentifier="TabBarViewController" id="PAX-OL-yG7" customClass="TapBarController" customModule="Image_Feed" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="QX8-f1-2lJ">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -94,19 +95,14 @@
                             <color key="backgroundColor" name="YP-Black"/>
                         </tabBarAppearance>
                     </tabBar>
-                    <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="5Hc-FC-GDd"/>
-                        <segue destination="jyR-8S-XDP" kind="relationship" relationship="viewControllers" id="HhC-KK-jRF"/>
-                    </connections>
                 </tabBarController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="en3-lu-A7o" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="414.50381679389312" y="218.3098591549296"/>
+            <point key="canvasLocation" x="285" y="84"/>
         </scene>
         <!--Auth View Controller-->
         <scene sceneID="Okr-Iy-KTJ">
             <objects>
-                <viewController id="nLg-qa-raq" customClass="AuthViewController" customModule="Image_Feed" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AuthViewController" id="nLg-qa-raq" customClass="AuthViewController" customModule="Image_Feed" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="18X-gj-oOc">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="783"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -248,22 +244,6 @@
             </objects>
             <point key="canvasLocation" x="1301.5267175572519" y="-139.43661971830986"/>
         </scene>
-        <!--ProfileView-->
-        <scene sceneID="QxU-mo-8Xb">
-            <objects>
-                <viewController title="ProfileView" id="jyR-8S-XDP" userLabel="ProfileView" customClass="ProfileViewController" customModule="Image_Feed" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="xmX-ZH-5DF">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="nQK-9d-3Tu"/>
-                        <color key="backgroundColor" name="YP-Black"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="" image="tab_profile_active" id="uxF-x0-R2R"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UE2-KF-1lQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1301.5267175572519" y="593.66197183098598"/>
-        </scene>
         <!--Single Image View Controller-->
         <scene sceneID="a8p-XP-jDH">
             <objects>
@@ -368,7 +348,6 @@
         <image name="like_button_on" width="42" height="42"/>
         <image name="splash_screen_logo" width="72.666664123535156" height="75.333335876464844"/>
         <image name="tab_editorial_active" width="30" height="30"/>
-        <image name="tab_profile_active" width="30" height="30"/>
         <namedColor name="Background">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

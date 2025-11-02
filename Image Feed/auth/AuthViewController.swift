@@ -51,12 +51,17 @@ extension AuthViewController: WebViewViewControllerDelegate {
         
         OAuth2Service.shared.fetchOAuthToken(code) { [weak self] result in
             ProgressHUD.dismiss()
-            guard let self = self else { return }
+             guard let self = self else { return }
 
-            switch result {
-            case .success(let token):
-                print("AuthVC: token received: \(token)")
-                OAuth2TokenStorage().token = token
+             switch result {
+             case .success(let token):
+                 print("AuthVC: token received: \(token)")
+                 OAuth2TokenStorage.shared.token = token
+                 vc.dismiss(animated: true) { 
+                     print("AuthVC: calling delegate.didAuthenticate")
+                     self.delegate?.didAuthenticate(self)
+                 }
+
 
             case .failure(let error):
                 print("OAuth token fetch failed: \(error)")
@@ -66,6 +71,21 @@ extension AuthViewController: WebViewViewControllerDelegate {
 
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         vc.dismiss(animated: true)
+    }
+}
+extension AuthViewController{
+    func showAuthErrorAlert(){
+        let alertController = UIAlertController(
+         title:"Что то пошло не так",
+         message:"Не удалось войти в сисстему",
+         preferredStyle: .alert)
+        
+    let okAction = UIAlertAction(
+        title: "OK",
+        style: .default,
+        handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
     }
 }
 
