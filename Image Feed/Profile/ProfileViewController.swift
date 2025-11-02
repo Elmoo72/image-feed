@@ -19,7 +19,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .black
         
-        setupUI()
+        
         fetchProfile()
         
         profileImageServiceObserver = NotificationCenter.default
@@ -32,7 +32,9 @@ final class ProfileViewController: UIViewController {
                 self.updateAvatar()
             }
         updateAvatar()
-            }
+        
+        setupUI()
+        }
 
     private func updateAvatar() {
         guard

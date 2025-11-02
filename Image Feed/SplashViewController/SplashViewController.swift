@@ -10,8 +10,10 @@ final class SplashViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
 
         setupImageView()
+//        view.backgroundColor = .#1A1B22
 
         if let token = storage.token {
             switchToTabBarController()
