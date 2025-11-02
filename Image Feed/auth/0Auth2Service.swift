@@ -100,21 +100,18 @@ final class OAuth2Service {
 extension OAuth2Service {
     private func object(for request: URLRequest, completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void) -> URLSessionTask {
         let decoder = JSONDecoder()
-        
-        return urlSession.objectTask(for: request) { (result: Result<Data, Error>) in
+        return urlSession.data(for: request) { (result: Result<Data, Error>) in
             switch result {
             case .success(let data):
                 do {
-                    let decodedData = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                    print("[OAuth2Service] JSON decoded successfully")
-                    completion(.success(decodedData))
-                } catch {
-                    print("[OAuth2Service] JSON decoding failed: \(error)")
+                    let body = try decoder.decode(OAuthTokenResponseBody.self, from: data)
+                    completion(.success(body))
+                }
+                catch {
                     completion(.failure(NetworkError.decodingError(error)))
                 }
                 
             case .failure(let error):
-                print("[OAuth2Service] Network error: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
