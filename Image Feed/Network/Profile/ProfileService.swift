@@ -5,13 +5,15 @@ struct ProfileResult: Codable {
     let firstName: String?
     let lastName: String?
     let bio: String?
+   
 
-    private enum CodingKeys: String, CodingKey {
-        case username
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case bio
-    }
+//    private enum CodingKeys: String, CodingKey {
+  //      case username
+    //    case firstName = "first_name"
+      //  case lastName = "last_name"
+        //case bio
+        
+   // }
 }
 
 struct Profile {
@@ -42,11 +44,28 @@ final class ProfileService {
         }
 
         let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in switch result {
-            case .success(let result):
+        case .success(let result):
+                        print("=== PROFILE DATA DEBUG ===")
+                        print("username: \(result.username)")
+                        print("firstName: \(String(describing: result.firstName))")
+                        print("lastName: \(String(describing: result.lastName))")
+                        
+                        // СОЗДАЕМ ПРАВИЛЬНОЕ ИМЯ ДЛЯ ОТОБРАЖЕНИЯ
+                        let displayName: String
+                        if let firstName = result.firstName, let lastName = result.lastName,
+                           !firstName.isEmpty, !lastName.isEmpty {
+                            displayName = "\(firstName) \(lastName)"                    // "Makar Sidor"
+                        } else if let firstName = result.firstName, !firstName.isEmpty {
+                            displayName = firstName                                     // "Makar"
+                        } else if let lastName = result.lastName, !lastName.isEmpty {
+                            displayName = lastName                                      // "Sidor"
+                        } else {
+                            displayName = result.username                               // "elmoo72" (запасной вариант)
+                        }
+
             let profile = Profile(
                 username: result.username,
-                name: "\(result.firstName) \(result.lastName)"
-                    .trimmingCharacters(in: .whitespaces),
+                name:displayName,
                 loginName: "@\(result.username)",
                 bio: result.bio
             )

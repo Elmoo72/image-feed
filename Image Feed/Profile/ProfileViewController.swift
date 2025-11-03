@@ -84,10 +84,12 @@ final class ProfileViewController: UIViewController {
             switch result {
             case .success(let profile):
                 self?.updateProfileDetails(with: profile)
+                ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
             case .failure(let error):
                 print("Error loading profile: \(error)")
             }
         }
+        
     }
 
     private func updateProfileDetails(with profile: Profile) {
@@ -98,6 +100,7 @@ final class ProfileViewController: UIViewController {
     }
 
     private func setupUI() {
+        print("»>\(String(describing: profileService.profile))")
         profileImageView.image = UIImage(named: "ProfileImage")
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
 

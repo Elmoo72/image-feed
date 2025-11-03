@@ -16,8 +16,9 @@ final class SplashViewController: UIViewController {
 //        view.backgroundColor = .#1A1B22
 
         if let token = storage.token {
-            switchToTabBarController()
             fetchProfile(token: token)
+           // switchToTabBarController()
+            
         } else {
             presentAuthViewController()
         }
@@ -77,9 +78,12 @@ final class SplashViewController: UIViewController {
 
             switch result {
             case let .success(profile):
-                ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
-                self.switchToTabBarController()
-
+                print("[SplashVC] Profile loaded for user: \(profile.username)")
+                ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in
+                    DispatchQueue.main.async {
+                        self.switchToTabBarController()
+                    }
+                }
             case let .failure(error):
                 print(error)
                 break

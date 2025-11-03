@@ -15,10 +15,10 @@ struct ProfileImage: Codable{
 
 struct UserResult: Codable{
     let profileImage: ProfileImage
-    private enum CodingKeys: String, CodingKey {
-        case profileImage = "profile_image"
+   // private enum CodingKeys: String, CodingKey {
+   //     case profileImage = "profile_image"
        
-    }
+  //  }
 
 }
 
@@ -35,7 +35,6 @@ final class ProfileImageService{
     
     func fetchProfileImageURL(username:String, completion: @escaping (Result<String, Error>) -> Void) {
         task?.cancel()
-        print(" Fetching avatar for \(username)")
 
         guard let token = OAuth2TokenStorage.shared.token else {
             completion(.failure(NSError(domain: "ProfileImageService", code: 401,userInfo:
