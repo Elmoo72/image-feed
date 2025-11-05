@@ -15,11 +15,6 @@ struct ProfileImage: Codable{
 
 struct UserResult: Codable{
     let profileImage: ProfileImage
-   // private enum CodingKeys: String, CodingKey {
-   //     case profileImage = "profile_image"
-       
-  //  }
-
 }
 
 
@@ -35,7 +30,7 @@ final class ProfileImageService{
     
     func fetchProfileImageURL(username:String, completion: @escaping (Result<String, Error>) -> Void) {
         task?.cancel()
-
+        
         guard let token = OAuth2TokenStorage.shared.token else {
             completion(.failure(NSError(domain: "ProfileImageService", code: 401,userInfo:
                                             [NSLocalizedDescriptionKey:"Authorization token missing"])))
@@ -49,28 +44,28 @@ final class ProfileImageService{
         }
         
         let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
-                guard let self else {return}
+            guard let self else {return}
+            
+            switch result {
+            case .success(let userResult):
+                let profileImageURL = userResult.profileImage.small
+                self.avatarURL = profileImageURL
+                completion(.success(profileImageURL))
+                print("Avatar URL: \(profileImageURL)")
                 
-                switch result {
-                case .success(let userResult):
-                    let profileImageURL = userResult.profileImage.small
-                    self.avatarURL = profileImageURL
-                    completion(.success(profileImageURL))
-                    print("Avatar URL: \(profileImageURL)")
-                    
-                    NotificationCenter.default.post(
-                        name: ProfileImageService.didChangeNotification,
-                        object: self,
-                        userInfo: ["URL": profileImageURL]
-                    )
-                    
-                case .failure(let error):
-                    print("Ошибка декодирования: \(error.localizedDescription)")
-                    completion(.failure(error))
-                }
+                NotificationCenter.default.post(
+                    name: ProfileImageService.didChangeNotification,
+                    object: self,
+                    userInfo: ["URL": profileImageURL]
+                )
+                
+            case .failure(let error):
+                print("Ошибка декодирования: \(error.localizedDescription)")
+                completion(.failure(error))
             }
+        }
         
-
+        
         self.task = task
         task.resume()
     }
@@ -79,7 +74,7 @@ final class ProfileImageService{
         guard let url = URL(string: "https://api.unsplash.com/users/\(username)") else {
             return nil
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

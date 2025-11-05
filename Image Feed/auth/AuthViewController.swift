@@ -1,16 +1,14 @@
 import WebKit
 import UIKit
 import ProgressHUD
+
 class AuthViewController: UIViewController{
     
     weak var delegate: AuthViewControllerDelegate?
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         configureBackButton()
-        
-        
     }
     
     private func configureBackButton() {
@@ -42,48 +40,55 @@ extension AuthViewController: WebViewViewControllerDelegate {
         print("AuthVC: got code = \(code)")
         print("AuthVC: start fetchOAuthToken")
         
-        vc.dismiss(animated: true) {
-            print("AuthVC: calling delegate.didAuthenticate")
-            self.delegate?.didAuthenticate(self)
-            ProgressHUD.animate()
-        }
-
+        ProgressHUD.animate()
         
         OAuth2Service.shared.fetchOAuthToken(code) { [weak self] result in
-            ProgressHUD.dismiss()
-             guard let self = self else { return }
-
-             switch result {
-             case .success(let token):
-                 print("AuthVC: token received: \(token)")
-                 OAuth2TokenStorage.shared.token = token
-                 vc.dismiss(animated: true) { 
-                     print("AuthVC: calling delegate.didAuthenticate")
-                     self.delegate?.didAuthenticate(self)
-                 }
-
-
-            case .failure(let error):
-                print("OAuth token fetch failed: \(error)")
+            DispatchQueue.main.async {
+                ProgressHUD.dismiss()
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let token):
+                    print("AuthVC: token received: \(token)")
+                    OAuth2TokenStorage.shared.token = token
+                    // Закрываем WebView и уведомляем делегата
+                    vc.dismiss(animated: true) {
+                        print("AuthVC: calling delegate.didAuthenticate")
+                        self.delegate?.didAuthenticate(self)
+                    }
+                    
+                case .failure(let error):
+                    print("OAuth token fetch failed: \(error)")
+                    
+                    self.showAuthErrorAlert {
+                        vc.dismiss(animated: true)
+                    }
+                }
             }
         }
     }
-
+    
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         vc.dismiss(animated: true)
     }
 }
-extension AuthViewController{
-    func showAuthErrorAlert(){
+
+extension AuthViewController {
+    func showAuthErrorAlert(completion: (() -> Void)? = nil) {
+        print("Алерт показан")
         let alertController = UIAlertController(
-         title:"Что то пошло не так",
-         message:"Не удалось войти в сисстему",
-         preferredStyle: .alert)
+            title: "Что то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
         
-    let okAction = UIAlertAction(
-        title: "OK",
-        style: .default,
-        handler: nil)
+        let okAction = UIAlertAction(
+            title: "OK",
+            style: .default
+        ) { _ in
+            completion?()
+        }
+        
         alertController.addAction(okAction)
         present(alertController, animated: true, completion: nil)
     }

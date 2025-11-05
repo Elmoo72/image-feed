@@ -2,51 +2,51 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
-
+    
     private let profileService = ProfileService.shared
     private let storage = OAuth2TokenStorage.shared
-
+    
     private var imageView: UIImageView!
-
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-
+        
         setupImageView()
-//        view.backgroundColor = .#1A1B22
-
+        
+        
         if let token = storage.token {
             fetchProfile(token: token)
-           // switchToTabBarController()
             
         } else {
             presentAuthViewController()
         }
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setNeedsStatusBarAppearanceUpdate()
     }
-
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
-
+    
     private func setupImageView() {
         let imageSplashScreenLogo = UIImage(named: "splashScreenLogo")
-
+        view.backgroundColor = UIColor(named: "YP-Black")
+        
         imageView = UIImageView(image: imageSplashScreenLogo)
-
+        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
-
+        
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
-
+    
     private func presentAuthViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         guard let authViewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
@@ -57,7 +57,7 @@ final class SplashViewController: UIViewController {
         authViewController.modalPresentationStyle = .fullScreen
         present(authViewController, animated: true)
     }
-
+    
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid window configuration")
@@ -68,14 +68,14 @@ final class SplashViewController: UIViewController {
             .instantiateViewController(withIdentifier: "TabBarViewController")
         window.rootViewController = tabBarController
     }
-
+    
     private func fetchProfile(token: String) {
         UIBlockingProgressHUD.show()
         profileService.fetchProfile(token) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
-
+            
             guard let self = self else { return }
-
+            
             switch result {
             case let .success(profile):
                 print("[SplashVC] Profile loaded for user: \(profile.username)")

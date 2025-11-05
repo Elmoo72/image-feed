@@ -61,13 +61,13 @@ extension URLSession {
                     }
                     completion(.failure(error))
                 }
-
+                
             case .failure(let error):
                 print("Ошибка запроса: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
-
+        
         return task
     }
 }
