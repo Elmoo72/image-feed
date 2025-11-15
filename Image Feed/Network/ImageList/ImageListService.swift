@@ -47,6 +47,7 @@ final class ImageListService {
     private(set) var photos: [Photo] = []
     private var lastLoadedPage: Int?
     private var task: URLSessionTask?
+    private var isFetching: Bool = false
     
     static let shared = ImageListService()
     static let didChangeNotification = Notification.Name(rawValue: "ImageListServiceDidChange")
@@ -57,9 +58,14 @@ final class ImageListService {
         lastLoadedPage = nil
         task?.cancel()
         task = nil
+        isFetching = false
     }
     
     func fetchPhotosNextPage(){
+        if isFetching {
+            return
+        }
+        
         task?.cancel()
         guard let token = OAuth2TokenStorage.shared.token else {
             return
@@ -69,10 +75,17 @@ final class ImageListService {
         guard let request = makePhotoListRequest(page:nextPage, token: token) else {
             return
         }
+        isFetching = true
         
         let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
                    guard let self else { return }
                    
+                defer {
+                          DispatchQueue.main.async {
+                              self.isFetching = false
+                          }
+                      }
+            
                    switch result {
                    case .success(let photoResults):
                        let dateFormatter = ISO8601DateFormatter()

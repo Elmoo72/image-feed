@@ -93,7 +93,7 @@ extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         let photo = photos[indexPath.row]
         
-        cell.cellImage.image = UIImage(named: "Stub")
+       // cell.cellImage.image = UIImage(named: "Stub")
         
         cell.cellImage.kf.indicatorType = .activity
         
@@ -110,7 +110,11 @@ extension ImagesListViewController {
             }
         }
         
-        cell.dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())
+        if let createdAt = photo.createdAt {
+                   cell.dateLabel.text = dateFormatter.string(from: createdAt)
+               } else {
+                   cell.dateLabel.text = ""
+               }
         
         let likeImage = photo.isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
         cell.likeButton.setImage(likeImage, for: .normal)
@@ -154,7 +158,6 @@ extension ImagesListViewController: ImagesListCellDelegate {
                 UIBlockingProgressHUD.dismiss()
             case .failure:
                 UIBlockingProgressHUD.dismiss()
-                // Показываем ошибку с использованием UIAlertController
                 let alert = UIAlertController(
                     title: "Ошибка",
                     message: "Не удалось изменить лайк",
