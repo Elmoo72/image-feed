@@ -15,6 +15,7 @@ final class ProfileViewController: UIViewController {
     private let profileImageView = UIImageView()
     private let exitButton = UIButton()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -98,6 +99,31 @@ final class ProfileViewController: UIViewController {
         loginNameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
     }
+
+        private func showLogoutAlert() {
+            let alert = UIAlertController(
+                title: "Пока, пока!",
+                message: "Уверены, что хотите выйти?",
+                preferredStyle: .alert
+            )
+            
+            let logoutAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
+                ProfileLogoutService.shared.logout()
+            }
+            
+            let cancelAction = UIAlertAction(title: "Нет", style: .cancel)
+            
+            alert.addAction(logoutAction)
+            alert.addAction(cancelAction)
+            
+            present(alert, animated: true)
+        }
+        
+        @objc private func didTapLogoutButton() {
+            print("кнопка нажата")
+            showLogoutAlert()
+        }
+    
     
     private func setupUI() {
         view.backgroundColor = UIColor(named: "YP-Black")
@@ -121,6 +147,9 @@ final class ProfileViewController: UIViewController {
         exitButton.setImage(UIImage(named: "Exit"), for: .normal)
         exitButton.tintColor = .red
         exitButton.translatesAutoresizingMaskIntoConstraints = false
+        exitButton.isUserInteractionEnabled = true
+        exitButton.isEnabled = true
+        exitButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
         
         view.addSubview(profileImageView)
         view.addSubview(nameLabel)
@@ -150,3 +179,4 @@ final class ProfileViewController: UIViewController {
         ])
     }
 }
+
