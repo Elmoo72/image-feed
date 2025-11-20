@@ -29,6 +29,10 @@ final class SingleImageViewController: UIViewController {
         
         imageView.contentMode = .scaleAspectFit
         loadFullImage()
+        
+        scrollView.accessibilityIdentifier = "image_scroll_view"
+        imageView.accessibilityIdentifier = "fullscreen_image"
+        
     }
     
     private func loadFullImage() {
