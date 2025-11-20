@@ -24,6 +24,7 @@ class WebViewViewController: UIViewController, WebViewViewControllerProtocol{
         //loadAuthView()
         presenter?.viewDidLoad()
         webView.navigationDelegate = self
+        webView.accessibilityIdentifier = "WebView"
         
        progressObservation = webView.observe(\.estimatedProgress, options: [.new]) { [weak self] webView, change in
             //self?.updateProgress()

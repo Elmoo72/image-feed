@@ -12,22 +12,28 @@ class Image_FeedUITests: XCTestCase {
     func testAuth() throws {
         app.buttons["Authenticate"].tap()
         
-        let webView = app.webViews["UnsplashWebView"]
+        let webView = app.webViews["WebView"]
         
-        XCTAssertTrue(webView.waitForExistence(timeout: 30))
+        XCTAssertTrue(webView.waitForExistence(timeout: 60))
         
         let loginTextField = webView.descendants(matching: .textField).element
-        XCTAssertTrue(loginTextField.waitForExistence(timeout: 30))
+        XCTAssertTrue(loginTextField.waitForExistence(timeout: 60))
         
         loginTextField.tap()
-        loginTextField.typeText("makar3452@yandex.ru")
+        loginTextField.typeText("macar.sidor@yandex.ru")
         webView.swipeUp()
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         
         passwordTextField.tap()
-        passwordTextField.typeText("M3a4k5a2r")
+        if app.buttons["Next keyboard"].exists {
+            app.buttons["Next keyboard"].tap()
+        } else if app.buttons["globe"].exists {
+            app.buttons["globe"].tap()
+        }
+        sleep(2) // даем время на переключение
+        passwordTextField.typeText("12345678")
         webView.swipeUp()
         
         webView.buttons["Login"].tap()
@@ -58,25 +64,54 @@ class Image_FeedUITests: XCTestCase {
         sleep(2)
         
         let image = app.scrollViews.images.element(boundBy: 0)
-        
-        image.pinch(withScale: 3, velocity: 1)
-        
+        // Zoom in
+        image.pinch(withScale: 3, velocity: 1) // zoom in
+        // Zoom out
         image.pinch(withScale: 0.5, velocity: -1)
         
-        let navBackButtonWhiteButton = app.buttons["nav back button white"]
+        let navBackButtonWhiteButton = app.buttons["back_button"]
         navBackButtonWhiteButton.tap()
     }
     
-    func testProfile() {
+    
+    func testProfile() throws {
         let app = XCUIApplication()
         app.launch()
         sleep(5)
+        
+        
         let tabBar = app.tabBars["TabBar"]
         XCTAssertTrue(tabBar.waitForExistence(timeout: 10), "TabBar не найден")
-        let tabBarButtons = tabBar.buttons
-        print("Найдено кнопок в TabBar: \(tabBarButtons.count)")
-        XCTAssertTrue(tabBarButtons.count >= 2, "В TabBar меньше 2 кнопок")
-        let profileButton = tabBarButtons.element(boundBy: 1)
+        
+        let profileButton = tabBar.buttons.element(boundBy: 1)
+        XCTAssertTrue(profileButton.waitForExistence(timeout: 5), "Кнопка профиля не найдена")
         profileButton.tap()
+        
+        
+        let nameLabel = app.staticTexts["user name"]
+        let loginLabel = app.staticTexts["user login"]
+        let bioLabel = app.staticTexts["user bio"]
+        
+        
+        XCTAssertTrue(nameLabel.waitForExistence(timeout: 10), "Имя пользователя не отображается")
+        XCTAssertTrue(loginLabel.waitForExistence(timeout: 10), "Логин пользователя не отображается")
+        
+        
+        XCTAssertFalse(nameLabel.label.isEmpty, "Имя пользователя пустое")
+        XCTAssertFalse(loginLabel.label.isEmpty, "Логин пользователя пустой")
+        
+        
+        let logoutButton = app.buttons["logout button"]
+        XCTAssertTrue(logoutButton.waitForExistence(timeout: 5), "Кнопка выхода не найдена")
+        logoutButton.tap()
+        
+        
+        let alert = app.alerts.firstMatch
+        if alert.waitForExistence(timeout: 3) {
+            alert.buttons["Да"].tap()
+        }
+        
+        let authButton = app.buttons["Authenticate"]
+        XCTAssertTrue(authButton.waitForExistence(timeout: 10), "Экран авторизации не открылся")
     }
 }

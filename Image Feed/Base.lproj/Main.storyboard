@@ -226,7 +226,7 @@
         <scene sceneID="a8p-XP-jDH">
             <objects>
                 <viewController storyboardIdentifier="SingleImageViewController" modalPresentationStyle="fullScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Z3v-ht-viL" customClass="SingleImageViewController" customModule="Image_Feed" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" ambiguous="YES" id="5we-Ii-Whb">
+                    <view key="view" contentMode="scaleToFill" id="5we-Ii-Whb">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -262,6 +262,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cw8-sk-Tkx">
                                 <rect key="frame" x="8" y="67" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="back_button"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="GdJ-G4-G3m"/>
                                     <constraint firstAttribute="width" constant="48" id="WHU-LY-y2n"/>
