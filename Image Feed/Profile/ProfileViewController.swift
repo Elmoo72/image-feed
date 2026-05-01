@@ -19,7 +19,10 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
-        
+        nameLabel.accessibilityIdentifier = "user name"
+        loginNameLabel.accessibilityIdentifier = "user login"
+        descriptionLabel.accessibilityIdentifier = "user bio"
+        exitButton.accessibilityIdentifier = "logout button"
         
         fetchProfile()
         

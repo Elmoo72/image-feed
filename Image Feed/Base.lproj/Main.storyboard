@@ -12,7 +12,7 @@
         <!--Web View View Controller-->
         <scene sceneID="QkV-DV-emU">
             <objects>
-                <viewController id="b3T-gn-chk" customClass="WebViewViewController" customModule="Image_Feed" sceneMemberID="viewController">
+                <viewController restorationIdentifier="WebView" storyboardIdentifier="WebViewViewController" id="b3T-gn-chk" customClass="WebViewViewController" customModule="Image_Feed" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bSP-pD-uhK">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -57,7 +57,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="CiN-Pb-lV1">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarViewController" id="PAX-OL-yG7" customClass="TabBarController" customModule="Image_Feed" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController restorationIdentifier="TabBar" storyboardIdentifier="TabBarViewController" id="PAX-OL-yG7" customClass="TabBarController" customModule="Image_Feed" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="QX8-f1-2lJ">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -80,8 +80,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7zR-Bt-1mH">
+                            <button opaque="NO" contentMode="scaleToFill" restorationIdentifier="Authenticate" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7zR-Bt-1mH">
                                 <rect key="frame" x="16" y="646" width="361" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Authenticate"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="1ao-vv-wYG"/>
                                 </constraints>
@@ -187,6 +188,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1019607843" green="0.1058823529" blue="0.1333333333" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="ImageListCell"/>
                                         <connections>
                                             <outlet property="cellImage" destination="UHT-CC-7rY" id="m9i-Vu-M30"/>
                                             <outlet property="dateLabel" destination="zZ7-qv-kLf" id="v4s-uC-ojU"/>
@@ -224,7 +226,7 @@
         <scene sceneID="a8p-XP-jDH">
             <objects>
                 <viewController storyboardIdentifier="SingleImageViewController" modalPresentationStyle="fullScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Z3v-ht-viL" customClass="SingleImageViewController" customModule="Image_Feed" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" ambiguous="YES" id="5we-Ii-Whb">
+                    <view key="view" contentMode="scaleToFill" id="5we-Ii-Whb">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -260,6 +262,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cw8-sk-Tkx">
                                 <rect key="frame" x="8" y="67" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="back_button"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="GdJ-G4-G3m"/>
                                     <constraint firstAttribute="width" constant="48" id="WHU-LY-y2n"/>

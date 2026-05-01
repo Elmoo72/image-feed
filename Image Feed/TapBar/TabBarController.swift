@@ -2,7 +2,6 @@ import UIKit
 
 final class TabBarController: UITabBarController {
     override func awakeFromNib() {
-        print("TabBar")
         super.awakeFromNib()
         let storyboard = UIStoryboard(name:"Main", bundle:.main)
         
@@ -17,5 +16,7 @@ final class TabBarController: UITabBarController {
                       selectedImage: nil
                   )
         self.viewControllers = [imagesListViewController, profileViewController]
+        
+        self.tabBar.accessibilityIdentifier = "TabBar"
         }
 }
